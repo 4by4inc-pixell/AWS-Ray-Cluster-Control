@@ -14,6 +14,7 @@ on:
   workflow_dispatch:
 
 env:
+  PIPENV: ~/.local/bin/pipenv
   LOCAL_WORK_DIR: ~/AWS-Ray-Cluster-Control
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -47,5 +48,5 @@ jobs:
           fi
           cd ${{ env.LOCAL_WORK_DIR }}
           git pull
-          pipenv install
-          pipenv run ray up ${{ matrix.file }}
+          ${{ env.PIPENV }} install
+          ${{ env.PIPENV }} run ray up ${{ matrix.file }}
