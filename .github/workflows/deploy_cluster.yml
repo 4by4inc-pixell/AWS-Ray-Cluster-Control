@@ -27,7 +27,7 @@ jobs:
       id: changes
       with:
         filters: |
-          is_target_changed: ${{ matrix.file }}
+          is_target_changed: cluster/${{ matrix.file }}
     - if: steps.changes.outputs.is_target_changed == 'false'
       run: echo "${{ matrix.file }} is not changed."
     - if: steps.changes.outputs.is_target_changed == 'true'
