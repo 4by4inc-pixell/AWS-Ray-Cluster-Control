@@ -38,7 +38,11 @@ jobs:
         key: ${{ secrets.AWS_REMOTE_SSH_KEY }}
         port: ${{ secrets.AWS_REMOTE_SSH_PORT }}
         script: |
+          WORK_DIR = "/home/${{ secrets.AWS_REMOTE_USER }}/AWS-Ray-Cluster-Control"
           cd ~
+          if [ ! -e $WORK_DIR ]; then
           git clone "https://${{ secrets.LOGIN_ID }}:${{ secrets.LOGIN_ACCESS_TOKEN }}@github.com/4by4inc-pixell/AWS-Ray-Cluster-Control.git"
-          cd ./AWS-Ray-Cluster-Control ;; git pull
+          fi
+          cd $WORK_DIR
+          git pull
           mkdir ${{ matrix.file }}
