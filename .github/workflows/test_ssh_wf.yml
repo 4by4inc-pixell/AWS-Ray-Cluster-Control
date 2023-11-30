@@ -30,5 +30,6 @@ jobs:
           script: |
             cd ~
             git clone "https://${{ secrets.LOGIN_ID }}:${{ secrets.LOGIN_ACCESS_TOKEN }}@github.com/4by4inc-pixell/AWS-Ray-Cluster-Control.git"
-            cd ./AWS-Ray-Cluster-Control ;; git pull
+            cd ./AWS-Ray-Cluster-Control
+            git pull
             mkdir success
