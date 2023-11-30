@@ -13,6 +13,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  LOCAL_WORK_DIR: ~/AWS-Ray-Cluster-Control
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   cluster_matrix:
@@ -38,11 +41,9 @@ jobs:
         key: ${{ secrets.AWS_REMOTE_SSH_KEY }}
         port: ${{ secrets.AWS_REMOTE_SSH_PORT }}
         script: |
-          WORK_DIR = "/home/${{ secrets.AWS_REMOTE_USER }}/AWS-Ray-Cluster-Control"
-          cd ~
-          if [ ! -e $WORK_DIR ]; then
-          git clone "https://${{ secrets.LOGIN_ID }}:${{ secrets.LOGIN_ACCESS_TOKEN }}@github.com/4by4inc-pixell/AWS-Ray-Cluster-Control.git"
+          if [ ! -e $LOCAL_WORK_DIR ]; then
+          git clone "https://${{ secrets.LOGIN_ID }}:${{ secrets.LOGIN_ACCESS_TOKEN }}@github.com/4by4inc-pixell/AWS-Ray-Cluster-Control.git" $LOCAL_WORK_DIR
           fi
-          cd $WORK_DIR
+          cd $LOCAL_WORK_DIR
           git pull
           mkdir ${{ matrix.file }}
