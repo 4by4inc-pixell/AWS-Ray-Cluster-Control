@@ -42,8 +42,10 @@ jobs:
         port: ${{ secrets.AWS_REMOTE_SSH_PORT }}
         script: |
           if [ ! -e ${{ env.LOCAL_WORK_DIR }} ]; then
-          git clone "https://${{ secrets.LOGIN_ID }}:${{ secrets.LOGIN_ACCESS_TOKEN }}@github.com/4by4inc-pixell/AWS-Ray-Cluster-Control.git" ${{ env.LOCAL_WORK_DIR }}
+          rm -r ${{ env.LOCAL_WORK_DIR }}
+          git clone "https://github.com/4by4inc-pixell/AWS-Ray-Cluster-Control.git" ${{ env.LOCAL_WORK_DIR }}
           fi
           cd ${{ env.LOCAL_WORK_DIR }}
           git pull
-          mkdir ${{ matrix.file }}
+          pipenv install
+          pipenv run ray up ${{ matrix.file }}
