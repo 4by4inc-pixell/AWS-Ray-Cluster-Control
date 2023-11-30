@@ -29,8 +29,7 @@ jobs:
         filters: |
           is_target_changed: ${{ matrix.file }}
     - if: steps.changes.outputs.is_target_changed == 'false'
-      run: |
-        - echo "${{ matrix.file }} is not changed."
+      run: echo "${{ matrix.file }} is not changed."
     - if: steps.changes.outputs.is_target_changed == 'true'
       uses: appleboy/ssh-action@v0.1.6
       with:
