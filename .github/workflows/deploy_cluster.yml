@@ -49,4 +49,4 @@ jobs:
           cd ${{ env.LOCAL_WORK_DIR }}
           git pull
           ${{ env.PIPENV }} install
-          ${{ env.PIPENV }} run ray up ${{ matrix.file }}
+          ${{ env.PIPENV }} run ray up cluster/${{ matrix.file }}
