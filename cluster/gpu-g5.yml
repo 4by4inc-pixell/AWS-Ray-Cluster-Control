@@ -1,0 +1,69 @@
+cluster_name: gpu-g5
+
+max_workers: 9999
+upscaling_speed: 1.0
+docker:
+    head_image: "anyscale/ray-ml:2.8.0-py310-gpu"
+    worker_image: "anyscale/ray-ml:2.8.0-py310-gpu"
+    container_name: "ray_container"
+    pull_before_run: True
+    run_options:   # Extra options to pass into "docker run"
+        - --ulimit nofile=65536:65536
+    # worker_run_options: []
+
+idle_timeout_minutes: 5
+
+# Cloud-provider specific configuration.
+provider:
+    type: aws
+    region: ap-northeast-2
+    availability_zone: ap-northeast-2a
+    cache_stopped_nodes: True # If not present, the default is True.
+
+auth:
+    ssh_user: ubuntu
+available_node_types:
+    ray.head.default:
+        resources: {"CPU": 0, "GPU": 0, "head": 1}
+        node_config:
+            InstanceType: t3.medium # r5dn.2xlarge | r5dn.4xlarge 
+            ImageId: ami-0bada01db921cd056
+            BlockDeviceMappings:
+                - DeviceName: /dev/sda1
+                  Ebs:
+                      VolumeSize: 100
+                      VolumeType: gp3
+    ray.worker.g5.xlarge:
+        min_workers: 0
+        max_workers: 24
+        resources: {"CPU": 4, "GPU": 1, "gpu_worker": 1}
+        node_config:
+            InstanceType: g5.xlarge
+            ImageId: ami-0bada01db921cd056 # my custom ami
+
+head_node_type: ray.head.default
+
+file_mounts: {
+    # "/workspace": "/home/vector/ray-dev-test",
+#    "/path1/on/remote/machine": "/path1/on/local/machine",
+#    "/path2/on/remote/machine": "/path2/on/local/machine",
+}
+cluster_synced_files: []
+rsync_exclude:
+    - "**/.git"
+    - "**/.git/**"
+rsync_filter:
+    - ".gitignore"
+initialization_commands: []
+
+setup_commands:
+    - pip install uvloop
+head_setup_commands: []
+worker_setup_commands: 
+    - pip install albumentations
+head_start_ray_commands:
+    - ray stop
+    - ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml --dashboard-host=0.0.0.0
+worker_start_ray_commands:
+    - ray stop
+    - ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
